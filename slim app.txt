@@ -1,0 +1,16 @@
+-Setup lamp
+-install composer
+-Install slim
+
+
+and we good to go..
+
+create two dirs
+public,src
+
+
+-create index.php inside public dir
+-add .htaccess to shorten up the path
+
+-add routes dir in src dir
+-add 'customers.php' in routes file(just a prefrence)
