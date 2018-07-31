@@ -11,6 +11,17 @@ use \Psr\Http\Message\ResponseInterface as Response;
 	$app = new \Slim\App;
 */
 
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+});
+$app->add(function ($req, $res, $next) {
+    $response = $next($req, $res);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', '*')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+});
+
 // Get all customers
 $app->get('/api/get_customers',function(Request $req,Response $res){
 	
@@ -66,7 +77,7 @@ $app->get('/api/get_customer/{id}',function(Request $req,Response $res){
 
 			// fetching results
 			$stmt = $conn->query($sql);
-			$record = $stmt->fetchAll(PDO::FETCH_OBJ);
+			$record = $stmt->fetch(PDO::FETCH_OBJ);
 			$conn = null;
 			$res->withStatus(200)->withHeader('Content-Type','application/json')->write(json_encode($record));
 
