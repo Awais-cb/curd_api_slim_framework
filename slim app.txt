@@ -14,3 +14,6 @@ public,src
 
 -add routes dir in src dir
 -add 'customers.php' in routes file(just a prefrence)
+
+get :
+http://localhost/slim_app/public/api/get_customers
