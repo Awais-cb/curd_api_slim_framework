@@ -34,7 +34,7 @@ $app->get('/api/get_customers',function(Request $req,Response $res){
 			// fetching results
 			$stmt = $conn->query($sql);
 			$records = $stmt->fetchAll(PDO::FETCH_OBJ);
-			$res->withStatus(200)->withHeader('Content-Type','application/json')->write(json_encode($records));
+			echo json_encode($records);
 
 
 	} catch (Exception $e) {
@@ -59,7 +59,7 @@ $app->get('/api/get_customer/{id}',function(Request $req,Response $res){
 			$stmt->bindParam(':id',$id);
 			$stmt->execute();
 			$record = $stmt->fetch(PDO::FETCH_OBJ);
-			$res->withStatus(200)->withHeader('Content-Type','application/json')->write(json_encode($record));
+			echo json_encode($record);
 
 
 	} catch (Exception $e) {
@@ -103,7 +103,7 @@ $app->post('/api/add_customer',function(Request $req,Response $res){
 
 			$notice=array('notice'=> array('text'=>'Customer added!'));
 
-			$res->withStatus(200)->withHeader('Content-Type','application/json')->write(json_encode($notice));
+			echo '{"notice": {"text": "Customer Added"}';
 
 
 	} catch (Exception $e) {
@@ -155,7 +155,7 @@ $app->put('/api/customer/update/{id}',function(Request $req,Response $res){
 
 			$notice=array('notice'=> array('text'=>'Customer updated!'));
 
-			$res->withStatus(200)->withHeader('Content-Type','application/json')->write(json_encode($notice));
+			echo '{"notice": {"text": "Customer Updated"}';
 
 
 	} catch (Exception $e) {
@@ -184,7 +184,7 @@ $app->delete('/api/customer/delete/{id}',function(Request $req,Response $res){
 			$conn = null;
 
 			$notice=array('notice'=> array('text'=>'Customer deleted!'));
-			$res->withStatus(200)->withHeader('Content-Type','application/json')->write(json_encode($notice));
+			 echo '{"notice": {"text": "Customer Deleted"}';
 
 
 	} catch (Exception $e) {
