@@ -34,26 +34,7 @@ $app->get('/api/get_customers',function(Request $req,Response $res){
 			// fetching results
 			$stmt = $conn->query($sql);
 			$records = $stmt->fetchAll(PDO::FETCH_OBJ);
-			$conn = null;
 			$res->withStatus(200)->withHeader('Content-Type','application/json')->write(json_encode($records));
-
-
-			/*
-			// WITH SQLI
-			$result = $conn->query($sql);
-			if ($result->num_rows > 0) {
-			
-		        while($row = $result->fetch_assoc()) {
-		         	$records[] = $row ;
-			    }
-
-			}else{
-
-			     $records[] = 'No records found!' ;
-			}
-			$conn->close();	
-			$res->withStatus(200)->withHeader('Content-Type', 'application/json')->write(json_encode($records));
-			*/
 
 
 	} catch (Exception $e) {
@@ -68,17 +49,16 @@ $app->get('/api/get_customers',function(Request $req,Response $res){
 $app->get('/api/get_customer/{id}',function(Request $req,Response $res){
 	
 	$id = $req->getAttribute('id');
-	$sql="select * from customers where c_id = $id";
+	$sql="SELECT * from customers WHERE c_id = :id";
 	
 	try {	
 			// Get db object and make connection
 			$db = new db();
 			$conn = $db->connect();
-
-			// fetching results
-			$stmt = $conn->query($sql);
+			$stmt = $conn->prepare($sql);
+			$stmt->bindParam(':id',$id);
+			$stmt->execute();
 			$record = $stmt->fetch(PDO::FETCH_OBJ);
-			$conn = null;
 			$res->withStatus(200)->withHeader('Content-Type','application/json')->write(json_encode($record));
 
 
@@ -101,12 +81,7 @@ $app->post('/api/add_customer',function(Request $req,Response $res){
 	$city = $req->getParam('city');
 	$state = $req->getParam('state');
 	
-	$sql="INSERT into customers (c_fname,c_lname,c_phone,c_email,c_address,c_city,c_state) VALUES('$fname','$lname','$phone','$email','$address','$city','$state')";
-	
-	/*
-		// INSERT QUERY using placeholders
-		$sql="INSERT into customers (c_fname,c_lname,c_phone,c_email,c_address,c_city,c_state) VALUES(:fname,:lname,:phone,:email,:address,:city,:state)";
-	*/
+	$sql="INSERT into customers (c_fname,c_lname,c_phone,c_email,c_address,c_city,c_state) VALUES(:fname,:lname,:phone,:email,:address,:city,:state)";
 
 	try {	
 			// Get db object and make connection
@@ -114,16 +89,16 @@ $app->post('/api/add_customer',function(Request $req,Response $res){
 			$conn = $db->connect();
 
 			$stmt = $conn->prepare($sql);
-	/*
-		// PLACEHOLDER BINDING
-		$stmt->bindParam(':fname',$fname);
-		$stmt->bindParam(':lname',$lname);
-		$stmt->bindParam(':phone',$phone);
-		$stmt->bindParam(':email',$email);
-		$stmt->bindParam(':address',$address);
-		$stmt->bindParam(':city',$city);
-		$stmt->bindParam(':state',$state);
-	*/
+	
+			// PLACEHOLDER BINDING
+			$stmt->bindParam(':fname',$fname);
+			$stmt->bindParam(':lname',$lname);
+			$stmt->bindParam(':phone',$phone);
+			$stmt->bindParam(':email',$email);
+			$stmt->bindParam(':address',$address);
+			$stmt->bindParam(':city',$city);
+			$stmt->bindParam(':state',$state);
+	
 			$stmt->execute();
 
 			$notice=array('notice'=> array('text'=>'Customer added!'));
@@ -153,20 +128,28 @@ $app->put('/api/customer/update/{id}',function(Request $req,Response $res){
 	$state = $req->getParam('state');
 	
 	$sql="UPDATE customers SET 
-				c_fname = '$fname',
-				c_lname = '$lname',
-				c_phone = '$phone',
-				c_email = '$email', 
-				c_address = '$address',
-				c_city = '$city',
-				c_state= '$state' WHERE c_id = $id";
-	echo $sql;			
+				c_fname = :fname,
+				c_lname = :lname,
+				c_phone = :phone,
+				c_email = :email, 
+				c_address = :address,
+				c_city = :city,
+				c_state= :state WHERE c_id = :id";
 	try {	
 			// Get db object and make connection
 			$db = new db();
 			$conn = $db->connect();
 
 			$stmt = $conn->prepare($sql);
+
+			$stmt->bindParam(':id',$id);
+			$stmt->bindParam(':fname',$fname);
+			$stmt->bindParam(':lname',$lname);
+			$stmt->bindParam(':phone',$phone);
+			$stmt->bindParam(':email',$email);
+			$stmt->bindParam(':address',$address);
+			$stmt->bindParam(':city',$city);
+			$stmt->bindParam(':state',$state);
 
 			$stmt->execute();
 
@@ -187,7 +170,7 @@ $app->put('/api/customer/update/{id}',function(Request $req,Response $res){
 $app->delete('/api/customer/delete/{id}',function(Request $req,Response $res){
 	
 	$id = $req->getAttribute('id');
-	$sql="DELETE from customers where c_id = $id";
+	$sql="DELETE from customers where c_id = :id";
 	
 	try {	
 			// Get db object and make connection
@@ -196,6 +179,7 @@ $app->delete('/api/customer/delete/{id}',function(Request $req,Response $res){
 
 			// fetching results
 			$stmt = $conn->prepare($sql);
+			$stmt->bindParam(':id',$id);
 			$stmt->execute();
 			$conn = null;
 
