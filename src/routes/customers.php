@@ -40,7 +40,8 @@ $app->get('/api/get_customers',function(Request $req,Response $res){
 	} catch (Exception $e) {
 		
 		// returning exception if there is any issue 
-		echo '{"error":{"connection_failed":'.$e->getMessage().'}';
+		$error=array('error'=> array('connection_failed'=>$e->getMessage()));
+		echo json_encode($error);
 
 	}
 });
@@ -65,7 +66,8 @@ $app->get('/api/get_customer/{id}',function(Request $req,Response $res){
 	} catch (Exception $e) {
 		
 		// returning exception if there is any issue 
-		echo '{"error":{"connection_failed":'.$e->getMessage().'}';
+		$error=array('error'=> array('connection_failed'=>$e->getMessage()));
+		echo json_encode($error);
 
 	}
 });
@@ -103,13 +105,14 @@ $app->post('/api/add_customer',function(Request $req,Response $res){
 
 			$notice=array('notice'=> array('text'=>'Customer added!'));
 
-			echo '{"notice": {"text": "Customer Added"}';
+			echo json_encode($notice);
 
 
 	} catch (Exception $e) {
 		
 		// returning exception if there is any issue 
-		echo '{"error":{"connection_failed":'.$e->getMessage().'}';
+		$error=array('error'=> array('connection_failed'=>$e->getMessage()));
+		echo json_encode($error);
 
 	}
 });
@@ -154,14 +157,14 @@ $app->put('/api/customer/update/{id}',function(Request $req,Response $res){
 			$stmt->execute();
 
 			$notice=array('notice'=> array('text'=>'Customer updated!'));
-
-			echo '{"notice": {"text": "Customer Updated"}';
-
+			echo json_encode($notice);
+			
 
 	} catch (Exception $e) {
 		
 		// returning exception if there is any issue 
-		echo '{"error":{"connection_failed":'.$e->getMessage().'}';
+		$error=array('error'=> array('connection_failed'=>$e->getMessage()));
+		echo json_encode($error);
 
 	}
 });
@@ -184,14 +187,14 @@ $app->delete('/api/customer/delete/{id}',function(Request $req,Response $res){
 			$conn = null;
 
 			$notice=array('notice'=> array('text'=>'Customer deleted!'));
-			 echo '{"notice": {"text": "Customer Deleted"}';
+			echo json_encode($notice);
 
 
 	} catch (Exception $e) {
 		
 		// returning exception if there is any issue 
-		echo '{"error":{"connection_failed":'.$e->getMessage().'}';
-
+		$error=array('error'=> array('connection_failed'=>$e->getMessage()));
+		echo json_encode($error);
 	}
 });
 
