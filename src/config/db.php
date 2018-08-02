@@ -15,7 +15,7 @@ class db
 
 	private $db_host = 'localhost';
 	private $user = 'root';
-	private $password = 'awais.dev';
+	private $password = '';
 	private $db_name = 'slim_app';
 
 	// connecting to db
